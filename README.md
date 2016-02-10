@@ -41,9 +41,9 @@ Calculating Lithospheric Flexure Parameters
 -----------
 The code takes as input the somewhat cryptic parameters lambda and k. 
 
-Lambda describes the flexural response of the lithosphere. A typical value is 1/54000, in units of meters. 
+Lambda describes the flexural response of the lithosphere. A typical value is 1/5400 (1/meter). For the lithosphere we usually have estimates for the elastic thickness, Te, not lambda. Te for oceanic lithosphere tends to range from 2 km (weak plate) to 50 km (strong plate). The continents are also highly variable, with Te ranging from 2 km to 100 km. See Watts (2001, ch. 6) for further discussion.
 
-For the lithosphere we usually have estimates for the elastic thickness, Te, not lambda. Te can be converted the lambda by first converting to the flexure rigidity,   
+Te can be converted the lambda by first converting to the flexure rigidity,   
 <img src="https://github.com/cthissen/flex1d/blob/master/images/D.png" alt="alt text" height="50px">  
 where E is Young's modulous (typically 100 Gigapascals) and v is Poisson's ratio (0.25). 
 
