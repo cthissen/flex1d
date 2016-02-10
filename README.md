@@ -58,7 +58,7 @@ where <img src="https://github.com/cthissen/flex1d/blob/master/images/rhom.png" 
 
 
 
-### Example
+### Examples 
 Here's an example that calculates lambda and k using typical lithospheric values.  [Code for this example](https://github.com/cthissen/flex1d/blob/master/test_example2.m)  
 <img src="https://github.com/cthissen/flex1d/blob/master/images/github_ex2.png" alt="alt text" width="400px"> 
 
@@ -67,6 +67,7 @@ Here's the same example, but using a plate broken at -50 km.  [Code for this exa
 
 <img src="https://github.com/cthissen/flex1d/blob/master/images/github_ex3.png" alt="alt text" width="400px"> 
 
+### [Additional Examples](https://github.com/cthissen/flex1d/wiki/Benchmarks)
 
-### Additional [examples](https://github.com/cthissen/flex1d/wiki/Benchmarks)
+
 
