@@ -1,8 +1,8 @@
-# flex1d
+# [flex1d](https://github.com/cthissen/flex1d/blob/master/flex1d.m)
 
 What is it?
 ----------------- 
-flex1d calculates the flexure of the lithosphere and other elastic plates under arbitrary loading. The solution is implemented in 1 dimension, so it calculates the deflection for a beam of any length and unit width. 
+[flex1d](https://github.com/cthissen/flex1d/blob/master/flex1d.m) calculates the flexure of the lithosphere and other elastic plates under arbitrary loading. The solution is implemented in 1 dimension, so it calculates the deflection for a beam of any length and unit width. 
 
 The code uses solutions from Hetényi, M. (1971). Beams on elastic foundation: theory with applications in the fields of civil and mechanical engineering. University of Michigan.
 
