@@ -72,7 +72,6 @@ for iA = 1:numel(x)
     airyZ = @(b1) airyfnc(b1,axn);
     airyDef(iA) = fzero(airyZ,0);
 end
-% fprintf('Airy deflection: %3.2f (km)\n',airyDef/1e3);
 
 hFig = figure(1); clf
 hAx(1) = subplot(3,1,1);
@@ -112,6 +111,7 @@ ylabel('Deflection difference (mm)')
 xlabel('x (km)')
 box on
 
+% % Make figures pretty
 % PlotOpts = setdefaultplottingopts;
 % PlotOpts.figureSize = 'fullPage';
 % publishfigure(hFig,PlotOpts);
