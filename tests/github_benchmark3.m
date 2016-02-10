@@ -93,10 +93,6 @@ hAiryT.Parent = hAx(2);
 hAiryT.HorizontalAlignment = 'left';
 publishfigure(hAiryT);
 
-% hAnT = text(hAiryT.Extent(1),-1,'Analytic Solution');
-% publishfigure(hAnT);
-% hNumT = text(hAiryT.Extent(1),-1.5,'Superposition Solution');
-% publishfigure(hNumT);
 hLeg = legend('  Analytical','  Numerical');
 hLeg.Location = 'southeast';
 hLeg.Box = 'off';
@@ -109,6 +105,7 @@ ylabel('Deflection difference (mm)')
 xlabel('x (km)')
 box on
 
+% % Make pretty figure
 % PlotOpts = setdefaultplottingopts;
 % PlotOpts.figureSize = 'fullPage';
 % publishfigure(hFig,PlotOpts);
