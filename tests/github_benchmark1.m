@@ -62,7 +62,6 @@ fprintf('Mean-squared error: %e\n',errSuperRectangle);
 % calculate airy isostatic deflection:
 airyfnc = @(b1) (Tsed-b1)*(rho_sed)/(rho_m-rho_sed)-b1;
 airyDef = fzero(airyfnc,0);
-% fprintf('Airy deflection: %3.2f (km)\n',airyDef/1e3);
 
 hFig = figure(1); clf
 hAx(1) = subplot(3,1,1);
@@ -91,10 +90,6 @@ hAiryT.Parent = hAx(2);
 hAiryT.HorizontalAlignment = 'center';
 publishfigure(hAiryT);
 
-% hAnT = text(hAiryT.Extent(1),-1,'Analytic Solution');
-% publishfigure(hAnT);
-% hNumT = text(hAiryT.Extent(1),-1.5,'Superposition Solution');
-% publishfigure(hNumT);
 hLeg = legend('  Analytical','  Numerical');
 hLeg.Location = 'southeast';
 hLeg.Box = 'off';
@@ -108,6 +103,7 @@ ylabel('Deflection difference (mm)')
 xlabel('x (km)')
 box on
 
+% % Make pretty figure
 % PlotOpts = setdefaultplottingopts;
 % PlotOpts.figureSize = 'fullPage';
 % publishfigure(hFig,PlotOpts);
