@@ -2,7 +2,7 @@
 
 What is it?
 ----------------- 
-flex1d calculates the flexure of the lithosphere and other elastic plates under arbitrary loading.
+flex1d calculates the flexure of the lithosphere and other elastic plates under arbitrary loading. The solution is implemented in 1 dimension, so it calculates the deflection for a beam of any length and unit width. 
 
 The code uses solutions from Hetényi, M. (1971). Beams on elastic foundation: theory with applications in the fields of civil and mechanical engineering. University of Michigan.
 
@@ -15,105 +15,152 @@ Christopher J. Thissen, Yale University
 
 Usage 
 -----------------
-The syntax is simple:
+The syntax is simple. For an infinite plate:  
 ````
-% Rectangular distributed load on an infinite plate
-
-% Define parameters
-g = 9.81;       % gravity (meters/seconds^2)
-rho_m = 10;     % density of material below beam. Determines bouyancy force.
-rho_infill = 1; % density of material that infills deflection (e.g. water or sediments)
-lambda = 1/54;  % flexural parameter. (1/meters)
-k = g*(rho_m - rho_infill); % "elastic foundation" parameter. For the lithosphere this is the bouyancy force.
-
-% Define loading
-dx = 1; % meters
-qxLeft  = -50; % meters
-qxRight  = 150; % meters
-x = qxLeft:dx:qxRight; % load vector
-qx = 1e3 + zeros(size(x)); % load parameters
-xSol = -300:(1*dx):300; % vector where we want the flexure
-
-% calculate deflection
 deflection = flex1d(x,qx,xSol,lambda,k,'infinite');
-
-figure(1); clf
-plot(xSol,-deflection)
+````  
+For a broken plate:  
 ````
+deflection = flex1d(x,qx,xSol,lambda,k,'broken',plateBreakPoint);
+````
+x gives the location of the load   
+qx gives the value of the load  
+xSol is the location where we want to calculate the deflection  
+lambda describes the flexural response of the plate  
+k describe the resistance of the underlying material to deflection  
+'infinite' or 'broken' specifies whether the plate extends to infinity or is broken.  
+plateBreakPoint is the x location of the break in the plate.   
+deflection is the deflection of the beam
 
-Additional examples can be found in test_flex1d.m
+#### Infinite vs Broken Plates
+The code will provide solutions for both infinite and broken plates. Infinite plates extend towards infinity in both directions. Broken plates are "broken" at a specific horiztonal position. Broken means that the plate has zero moment and shear where it is broken. Other types of end conditions (e.g. hinged, or fixed location) are also possible. If there's interest these solutions can be easily added. Just send me an email (cthissen@gmail.com) or leave a comment on the issues tab above. 
 
 Calculating Lithospheric Flexure Parameters
 -----------
 The code takes as input the somewhat cryptic parameters lambda and k. 
 
-### Calculating lambda
 Lambda describes the flexural response of the lithosphere. A typical value is 1/54000, in units of meters. 
 
-We usually have estimates for the elastic thickness, Te. This can be converted the lambda by first converting to the flexure rigidity, 
+For the lithosphere we usually have estimates for the elastic thickness, Te, not lambda. Te can be converted the lambda by first converting to the flexure rigidity,   
+<img src="https://github.com/cthissen/flex1d/blob/master/images/D.png" alt="alt text" height="50px">  
+where E is Young's modulous (typically 100 Gigapascals) and v is Poisson's ratio (0.25). 
 
-<img>
+Lambda is related to D by  
+<img src="https://github.com/cthissen/flex1d/blob/master/images/lambda.png" alt="alt text" height="50px"> 
 
-where E is Young's modulous (typically 10e10 Pascals) and v is Poisson's ratio (0.25). 
+The downward deflection of the plate is resisted both by the flexural strength of the beam itself, and the force needed to move the underlying material out of the way. For lithospheric problems, the resisting force of the foundation is due to buoyancy. As the deflection pushes the mantle out of the way, the difference in densities creates a bouyance force that resists the deflection. K is calculated simply as  
 
-Lambda is then related to D by
+<img src="https://github.com/cthissen/flex1d/blob/master/images/k.png" alt="alt text" height="25px"> 
+
+where <img src="https://github.com/cthissen/flex1d/blob/master/images/rhom.png" alt="alt text" height="20px"> is the density of the mantle. Make sure your units match! If you use g = 9.81 (m/s^2), then your densities should be kg/m^3. 
 
 
-### Calculating k
-The solutions are for a beam on an elastic foundation. This means that downward deflection of the plate is resisted both by the flexural strength of the beam itself, and the force to move the underlying material out of the way. The elastic part of the foundation means that, like a spring, the resisting force from the foundation is a linear function of the distance, F = kx. For lithospheric problems, the resisting force of the foundation is due to buoyancy. As the deflection pushes the mantle out of the way, the difference in densities creates a bouyance force that resists the deflection. So how to calculate k?
-
-<eqn>
-
-The relevant densities are the density of the mantle, and the density of the material that infills the deflection, such as water or sediments. 
-
-<img>
-
-Make sure your units match! If you use g = 9.81 (m/s^2), then your densities should be kg/m^3. 
 
 ### Example
-Here's an example that calculates lambda and k using typical lithospheric values.
+Here's an example that calculates lambda and k using typical lithospheric values.  
+<img src="https://github.com/cthissen/flex1d/blob/master/images/github_ex2.png" alt="alt text" width="400px"> 
+
+The above image is created using this code:  
 ````
+%% Infinite beam, distributed load
+% set material parameters
+g = 9.81;      % m/s^2
+rho_m = 3340;  % kg/m^3, density of material below beam. Determines bouyancy force. 
 
 
-````
+% set flexure parameters
+Te = 25e3; % elastic thickness (meters)
+E = 100e9; % young's modulous (100 GPA, Pa = kg/m^2)
+v = 0.25;  % Poissons ratio
+D = (E*Te^3)/(12*(1-v^2)); % rigidity parameter
+lambda = (g*rho_m/(4*D))^(1/4); %
+k = g*rho_m; % "elastic foundation" in lithosphere problems is the bouyancy force
 
 
-# Infinite vs Broken Plates
-The code will provide solutions for both infinite and broken plates. Infinite plates extend towards infinity in both directions. Broken plates are "broken" at a specific horiztonal position. Broken here means that the plate has zero moment and shear where it is broken. Other types of end conditions (e.g. hinged, or fixed location) are also possible. If there's interest these solutions can be easily added. Just send me an email (cthissen@gmail.com) or leave a comment on the issues tab above. 
+% define loading
+Tsed = 3e3;    % m, thickness of sedimentary load
+rho_sed = 2700;% kg/m^3, density of material that infills deflection (e.g. sediments)
 
-You must specify whether your plate is infinite or broken.  
-Here's the syntax for an infinite plate
-````
-deflection = flex1d(x,qx,xSol,lambda,k,'infinite');
-````
-And here's the syntax for a broken plate
-````
-deflection = flex1d(x,qx,xSol,lambda,k,'broken',plateBreakPoint);
-````
-where plateBreakPoint is the x location (in the same units) of the break in the plate. 
 
-Here's the first example, but using a plate broken at the left-limit of the load.
-````
-% Rectangular distributed load on a broken plate
-
-% Define parameters
-g = 9.81;       % gravity (meters/seconds^2)
-rho_m = 10;     % density of material below beam. Determines bouyancy force.
-rho_infill = 1; % density of material that infills deflection (e.g. water or sediments)
-lambda = 1/54;  % flexural parameter. (1/meters)
-k = g*(rho_m - rho_infill); % "elastic foundation" parameter. For the lithosphere this is the bouyancy force.
-
-% Define loading
-dx = 1; % meters
-qxLeft  = -50; % meters
-qxRight  = 150; % meters
+% build load vector
+%... load extends from qxLeft to qxRight with constant magnitude q0
+dx = 1e2; % meters
+qxLeft  = -50e3;  % meters
+qxRight  = 100e3; % meters
 x = qxLeft:dx:qxRight; % load vector
-qx = 1e3 + zeros(size(x)); % load parameters
-xSol = qxLeft:(1*dx):300; % vector where we want the flexure
+q0 = rho_sed*Tsed*g;
+qx = q0 + zeros(size(x)); % load, kg/m^2 ? 
 
 % calculate deflection
-deflection = flex1d(x,qx,xSol,lambda,k,'broken',qxLeft);
+xSol = -300e3:(1e3):300e3; % vector of locations where we want to calculate deflection
+deflection = flex1d(x,qx,xSol,lambda,k,'infinite'); % calculated deflection
 
-figure(1); clf
-plot(xSol,-deflection)
+% plotting
+hFig = figure(1); clf
+subplot(2,1,1)
+qPlot = [0,0,qx,0,0];
+xPlot = [xSol(1),x(1),x,x(end),xSol(end)];
+plot(xPlot/1e3,qPlot/1e6);
+ylabel('load (MPa)')
+xlabel('x (km)')
+title(sprintf('Rectangular Load'))
+
+subplot(2,1,2)
+plot(xSol/1e3,-deflection/1e3)
+ylabel('Deflection (km)')
+xlabel('x (km)')
 ````
+
+Here's the same example, but using a plate broken at -50 km.
+<img src="https://github.com/cthissen/flex1d/blob/master/images/github_ex3.png" alt="alt text" width="400px"> 
+
+````
+%% Broken beam, distributed load
+% set material parameters
+g = 9.81;      % m/s^2
+rho_m = 3340;  % kg/m^3, density of material below beam. Determines bouyancy force. 
+
+
+% set flexure parameters
+Te = 25e3; % elastic thickness (meters)
+E = 100e9; % young's modulous (100 GPA, Pa = kg/m^2)
+v = 0.25;  % Poissons ratio
+D = (E*Te^3)/(12*(1-v^2)); % rigidity parameter
+lambda = (g*rho_m/(4*D))^(1/4); %
+k = g*rho_m; % "elastic foundation" in lithosphere problems is the bouyancy force
+
+
+% define loading
+Tsed = 3e3;    % m, thickness of sedimentary load
+rho_sed = 2700;% kg/m^3, density of material that infills deflection (e.g. sediments)
+
+
+% build load vector
+%... load extends from qxLeft to qxRight with constant magnitude q0
+dx = 1e2; % meters
+qxLeft  = -50e3;  % meters
+qxRight  = 100e3; % meters
+x = qxLeft:dx:qxRight; % load vector
+q0 = rho_sed*Tsed*g;
+qx = q0 + zeros(size(x)); % load, kg/m^2 ? 
+
+% calculate deflection
+xSol = qxLeft:(1e3):300e3; % vector of locations where we want to calculate deflection
+deflection = flex1d(x,qx,xSol,lambda,k,'broken',qxLeft); % calculated deflection
+
+% plotting
+hFig = figure(1); clf
+subplot(2,1,1)
+qPlot = [0,0,qx,0,0];
+xPlot = [xSol(1),x(1),x,x(end),xSol(end)];
+plot(xPlot/1e3,qPlot/1e6);
+ylabel('load (MPa)')
+xlabel('x (km)')
+title(sprintf('Rectangular Load'))
+
+subplot(2,1,2)
+plot(xSol/1e3,-deflection/1e3)
+ylabel('Deflection (km)')
+xlabel('x (km)')
+````
+#### A note about the density of the infilling material
