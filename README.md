@@ -111,7 +111,7 @@ ylabel('Deflection (km)')
 xlabel('x (km)')
 ````
 
-Here's the same example, but using a plate broken at -50 km.
+Here's the same example, but using a plate broken at -50 km.  
 <img src="https://github.com/cthissen/flex1d/blob/master/images/github_ex3.png" alt="alt text" width="400px"> 
 
 ````
@@ -164,3 +164,9 @@ ylabel('Deflection (km)')
 xlabel('x (km)')
 ````
 #### A note about the density of the infilling material
+
+
+## Benchmarks
+
+
+
