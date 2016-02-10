@@ -1,5 +1,3 @@
-close all; clear all; clc
-
 %% Infinite beam, distributed load
 % set material parameters
 g = 9.81;      % m/s^2
@@ -50,10 +48,10 @@ xlabel('x (km)')
 
 
 
-
-PlotOpts = setdefaultplottingopts;
-PlotOpts.figureSize = 'fullPage';
-publishfigure(hFig,PlotOpts);
-publishfigure(hFig.Children(1),PlotOpts);
-publishfigure(hFig.Children(2),PlotOpts);
-savefigure_cjt(hFig,'github_ex2','-png')
+% % Make pretty figure
+% PlotOpts = setdefaultplottingopts;
+% PlotOpts.figureSize = 'fullPage';
+% publishfigure(hFig,PlotOpts);
+% publishfigure(hFig.Children(1),PlotOpts);
+% publishfigure(hFig.Children(2),PlotOpts);
+% savefigure_cjt(hFig,'github_ex2','-png')

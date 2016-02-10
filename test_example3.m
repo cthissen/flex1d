@@ -50,10 +50,10 @@ xlabel('x (km)')
 
 
 
-
-PlotOpts = setdefaultplottingopts;
-PlotOpts.figureSize = 'fullPage';
-publishfigure(hFig,PlotOpts);
-publishfigure(hFig.Children(1),PlotOpts);
-publishfigure(hFig.Children(2),PlotOpts);
-savefigure_cjt(hFig,'github_ex3','-png')
+% % Make pretty figure
+% PlotOpts = setdefaultplottingopts;
+% PlotOpts.figureSize = 'fullPage';
+% publishfigure(hFig,PlotOpts);
+% publishfigure(hFig.Children(1),PlotOpts);
+% publishfigure(hFig.Children(2),PlotOpts);
+% savefigure_cjt(hFig,'github_ex3','-png')
