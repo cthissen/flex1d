@@ -167,6 +167,6 @@ xlabel('x (km)')
 
 
 ## Benchmarks
-Hetenyi (1949) provides a number of analyitcal solutions that can be used to test the implementation. 
+Hetenyi (1949) provides a number of analytical solutions that can be used to test the implementation. 
 
 
