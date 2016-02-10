@@ -1,36 +1,69 @@
 function [deflection] = flex1d(xLoad,qLoad,xSol,lambda,k,plateCase,xBroken)
-% calculate the felxural response of an elastic plate on an elastic
-% foundation. 
-% Assumes
-% 1. Plate is perfectly elastic, with no viscous deformation or fracturing.
-% 2. Linear elastic rheology.
-% 3. Constant elastic properties
-% 4. Underlying material reponds with a force that is linearly related to
-% the deflection (Winkler foundation). In the mantle, this is provided by
-% the bouyancy force. 
-% 5. Isotropic plate, which allows the elasticity to captured by two
-% parameters
-
-% Plasti uses k = g*rho_m, also leaves rhof out of alpha
+%   flex1d(xLoad,qLoad,xSol,lambda,k,plateCase,xBroken) calculates the
+%   deflection of a beam on an elastic foundation. xLoad and qLoad must be
+%   vectors that define the location and magnitude of the load. xSol is a
+%   vector that gives the location where the deflection will be calculated.
+%   lambda and k are scalars that define the flexural response. plateCase
+%   is a string that must be either 'infinite' or 'broken'. xBroken defines
+%   the location of the break for the broken plate solution. deflection
+%   gives the flexural deflection of the beam in the same units as xLoad
+%   and xSol. 
 %
-% c ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-% C  NOTE: there is no rhof in the def of alpha.
-% c 	see project notes for description of method of calculating flexure and
-% c	why the rhof is left out. In brief, it is left out because the forces
-% c	acting on the imaginary plate are calculated as the load from the crust
-% c	and the load from the water.  Another way to do this problem would be 
-% c	to use rhof in the eqn and calculate just the loads from the crust.
-% c	In this case the force from any portion of a colm of crust that is below a 
-% c	defined sea level is (rhoc-rhof)*g*h and the force form the portion of 
-% c	the same colm above sea level (if there is a sub aerial portion) is 
-% c	rhoc*g*h', where h' is the height of the colm above sea level
-% c ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-% c calculate flexural parameters
-%       alpha1=(4.0*prig/((rhom)*g))**0.25
-%       alpha2=(4.0*rrig/((rhom)*g))**0.25
-%       plam1=1.0/alpha1
-%       plam2=1.0/alpha2
-%       fk=rhom*g
+%   [deflection] = flex1d(xLoad,qLoad,xSol,lambda,k,'infinite') uses the infinite beam
+%   solutions
+%
+%   [deflection] = flex1d(xLoad,qLoad,xSol,lambda,k,'broken',xBroken) uses the broken beam
+%   solutions, with the break at xBroken.
+%
+%
+%   For example. Calculate the deflection of an infinite beam with a
+%   rectangular load:
+%     g = 9.81;      % m/s^2, gravity
+%     rho_m = 3340;  % kg/m^3, density of material below beam. Determines bouyancy force. 
+% 
+%     % set flexure parameters
+%     lambda = 1/54000; % flexural parameter (1/meter)
+%     k = g*rho_m;      % elastic foundation parameter 
+% 
+%     % define loading
+%     Tsed = 3e3;    % m, thickness of sedimentary load
+%     rho_sed = 2700;% kg/m^3, density of material that infills deflection (e.g. sediments)
+% 
+%     % Define loading
+%     %... load extends from qxLeft to qxRight with constant magnitude q0
+%     dx = 1e2; % meters
+%     qxLeft  = -50e3;  % meters
+%     qxRight  = 100e3; % meters
+%     x = qxLeft:dx:qxRight; % load vector
+%     q0 = rho_sed*Tsed*g;
+%     qx = q0 + zeros(size(x)); % load, kg/m^2 ? 
+% 
+%     % calculate deflection
+%     xSol = -300e3:(1e3):300e3; % vector of locations where we want to calculate deflection
+%     deflection = flex1d(x,qx,xSol,lambda,k,'infinite'); % calculated deflection
+% 
+%     % plotting
+%     hFig = figure(1); clf
+%     subplot(2,1,1)
+%     qPlot = [0,0,qx,0,0];
+%     xPlot = [xSol(1),x(1),x,x(end),xSol(end)];
+%     plot(xPlot/1e3,qPlot/1e6);
+%     ylabel('load (MPa)')
+%     xlabel('x (km)')
+%     title(sprintf('Rectangular Load'))
+% 
+%     subplot(2,1,2)
+%     plot(xSol/1e3,-deflection/1e3)
+%     ylabel('Deflection (km)')
+%     xlabel('x (km)')
+% 
+%
+%   Additional examples can be found in test_example1.m. test_example2.
+%
+
+%   Christopher Thissen (cthissen@gmail.com)
+%   Yale University
+%   Feb 10, 2016
 
 %% check and parse inputs
 narginchk(6,7);
